@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Offres d'emploi{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Filtres -->
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-search"></i> Filtres</h5>
+                    <form method="GET" action="{{ url_for('main.jobs') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Type de contrat</label>
+                            {% for type in contract_types %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="contract_type" 
+                                       value="{{ type }}" id="contract_{{ type }}"
+                                       {% if type in selected_filters.contract_type %}checked{% endif %}>
+                                <label class="form-check-label" for="contract_{{ type }}">
+                                    {{ type }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Localisation</label>
+                            <select class="form-select" name="location">
+                                <option value="">Toutes les localisations</option>
+                                {% for location in locations %}
+                                <option value="{{ location }}" 
+                                        {% if location == selected_filters.location %}selected{% endif %}>
+                                    {{ location }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Expérience requise</label>
+                            <select class="form-select" name="experience">
+                                <option value="">Tous niveaux</option>
+                                {% for exp in experience_levels %}
+                                <option value="{{ exp }}"
+                                        {% if exp == selected_filters.experience %}selected{% endif %}>
+                                    {{ exp }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Appliquer les filtres</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des offres -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>{{ jobs|length }} offre(s) trouvée(s)</h2>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                            id="sortDropdown" data-bs-toggle="dropdown">
+                        Trier par
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?sort=date">Date</a></li>
+                        <li><a class="dropdown-item" href="?sort=salary">Salaire</a></li>
+                        <li><a class="dropdown-item" href="?sort=company">Entreprise</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            {% for job in jobs %}
+            <div class="card job-card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            {% if job.recruiter.logo_path %}
+                            <img src="{{ url_for('static', filename='uploads/logos/' + job.recruiter.logo_path) }}" 
+                                 class="img-fluid company-logo" alt="{{ job.recruiter.company_name }}">
+                            {% else %}
+                            <div class="company-logo-placeholder">
+                                {{ job.recruiter.company_name[:2].upper() }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-10">
+                            <h3 class="card-title">{{ job.title }}</h3>
+                            <h6 class="company-name">{{ job.recruiter.company_name }}</h6>
+                            
+                            <div class="job-tags mb-3">
+                                <span class="badge bg-primary">{{ job.location }}</span>
+                                <span class="badge bg-secondary">{{ job.contract_type }}</span>
+                                {% if job.salary_min and job.salary_max %}
+                                <span class="badge bg-info">
+                                    {{ job.salary_min }}-{{ job.salary_max }} FCFA
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <p class="card-text">{{ job.description[:200] }}...</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="job-meta">
+                                    <small class="text-muted">
+                                        Publié le {{ job.created_at.strftime('%d/%m/%Y') }}
+                                    </small>
+                                    
+                                </div>
+                                <a href="{{ url_for('main.job_details', job_id=job.id) }}" 
+                                   class="btn btn-outline-primary">
+                                   <i class="fas fa-info-circle"></i> Voir l'offre
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if pagination.pages > 1 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% for page in pagination.iter_pages() %}
+                        {% if page %}
+                            <li class="page-item {% if page == pagination.page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('main.jobs', page=page) }}">{{ page }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

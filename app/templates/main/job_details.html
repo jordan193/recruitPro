@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        {% if job.recruiter.logo_path %}
+                        <img src="{{ url_for('static', filename='uploads/logos/' + job.recruiter.logo_path) }}" 
+                             class="company-logo me-3" alt="{{ job.recruiter.company_name }}", width=" 35%">
+                        {% else %}
+                        <div class="company-logo-placeholder me-3">
+                            {{ job.recruiter.company_name[:2].upper() }}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <h1 class="h2 mb-1">{{ job.title }}</h1>
+                            <h2 class="h5 text-muted">{{ job.recruiter.company_name }}</h2>
+                        </div>
+                    </div>
+
+                    <div class="job-tags mb-4">
+                        <span class="badge bg-primary">{{ job.location }}</span>
+                        <span class="badge bg-secondary">{{ job.contract_type }}</span>
+                        {% if job.salary_min and job.salary_max %}
+                        <span class="badge bg-info">
+                            {{ job.salary_min }}-{{ job.salary_max }} {{ job.salary_currency }}
+                        </span>
+                        {% endif %}
+                        <span class="badge bg-success">{{ job.location_type }}</span>
+                    </div>
+
+                    <div class="job-section mb-4">
+                        <h3>Description du poste</h3>
+                        <p>{{ job.description }}</p>
+                    </div>
+
+                    <div class="job-section mb-4">
+                        <h3>Responsabilités</h3>
+                        {{ job.responsibilities|safe }}
+                    </div>
+
+                    <div class="job-section mb-4">
+                        <h3>Prérequis</h3>
+                        {{ job.requirements|safe }}
+                    </div>
+
+                    {% if job.benefits %}
+                    <div class="job-section mb-4">
+                        <h3>Avantages</h3>
+                        {{ job.benefits|safe }}
+                    </div>
+                    {% endif %}
+
+                    <div class="job-section">
+                        <h3>Compétences requises</h3>
+                        <div class="skills-tags">
+                            {% for skill in job.skills_required or [] %}
+                            <span>{{ skill }}</span>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 sticky-top" style="top: 2rem;">
+                <div class="card-body">
+                    {% if current_user.is_authenticated and current_user.user_type == 'candidate' %}
+                        {% if has_applied %}
+                            <div class="alert alert-info">
+                                Vous avez déjà postulé à cette offre
+                            </div>
+                        {% else %}
+                            <a href="{{ url_for('candidate.apply', job_id=job.id) }}" 
+                               class="btn btn-primary btn-lg w-100 mb-3">
+                               <i class="fas fa-paper-plane"></i>  Postuler
+                            </a>
+                        {% endif %}
+                    {% elif not current_user.is_authenticated %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-paper-plane"></i> Connectez-vous pour postuler
+                        </a>
+                    {% endif %}
+
+                    <div class="job-meta-info">
+                        <div class="meta-item mb-3">
+                            <i class="fas fa-calendar-alt text-muted me-2"></i>
+                            Publié le {{ job.created_at.strftime('%d/%m/%Y') }}
+                        </div>
+                        <div class="meta-item mb-3">
+                            <i class="fas fa-users text-muted me-2"></i>
+                            
+                        </div>
+                        <div class="meta-item mb-3">
+                            <i class="fas fa-graduation-cap text-muted me-2"></i>
+                            {{ job.education_required }}
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-briefcase text-muted me-2"></i>
+                            {{ job.experience_required }}
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="company-info">
+                        <h4>À propos de l'entreprise</h4>
+                        <p>{{ job.recruiter.company_description }}</p>
+                        {% if job.recruiter.website %}
+                        <a href="{{ job.recruiter.website }}" target="_blank" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-2"></i>
+                            Visiter le site web
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

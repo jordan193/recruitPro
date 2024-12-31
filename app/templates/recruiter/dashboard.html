@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord - Recruteur{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12 d-flex justify-content-between align-items-center">
+            <h1>Tableau de bord Recruteur</h1>
+            <a href="{{ url_for('recruiter.new_job') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Nouvelle offre
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if jobs %}
+            {% for job in jobs %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 job-card" id="job-card-{{ job.id }}">
+                        <div class="card-body">
+                            <!-- Mode vue -->
+                            <div class="view-mode">
+                                <h3 class="card-title">{{ job.title }}</h3>
+                                <p class="card-text text-muted">
+                                    <i class="fas fa-map-marker-alt"></i> {{ job.location }} |
+                                    <i class="fas fa-file-contract"></i> {{ job.contract_type }}
+                                </p>
+                                <p class="card-text">
+                                    {% if job.salary_min and job.salary_max %}
+                                        <i class="fas fa-euro-sign"></i> 
+                                        {{ job.salary_min }} - {{ job.salary_max }} €
+                                    {% endif %}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-info">
+                                        {{ job.applications|length }} candidature(s)
+                                    </span>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('recruiter.view_applications', job_id=job.id) }}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-users"></i> Candidatures
+                                        </a>
+                                        <button class="btn btn-outline-secondary btn-sm edit-job-btn"
+                                                data-job-id="{{ job.id }}">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm delete-job-btn"
+                                                data-job-id="{{ job.id }}">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mode édition -->
+                            <div class="edit-mode d-none">
+                                <div class="edit-mode d-none">
+                                    <form class="job-edit-form" method="POST" 
+                                          action="{{ url_for('recruiter.update_job', job_id=job.id) }}">
+                                        <div class="mb-3">
+                                            <label class="form-label">Titre</label>
+                                            <input type="text" class="form-control" name="title" 
+                                                   value="{{ job.title }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" name="description" 
+                                                      rows="3" required>{{ job.description }}</textarea>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <label class="form-label">Localisation</label>
+                                                <input type="text" class="form-control" name="location" 
+                                                       value="{{ job.location }}">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">Type de contrat</label>
+                                                <select class="form-select" name="contract_type">
+                                                    <option value="CDI" {% if job.contract_type == 'CDI' %}selected{% endif %}>CDI</option>
+                                                    <option value="CDD" {% if job.contract_type == 'CDD' %}selected{% endif %}>CDD</option>
+                                                    <option value="Stage" {% if job.contract_type == 'Stage' %}selected{% endif %}>Stage</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <label class="form-label">Salaire min</label>
+                                                <input type="number" class="form-control" name="salary_min" 
+                                                       value="{{ job.salary_min }}">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">Salaire max</label>
+                                                <input type="number" class="form-control" name="salary_max" 
+                                                       value="{{ job.salary_max }}">
+                                            </div>
+                                        </div>
+                                        <!-- Nouveau champ pour la devise -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Devise</label>
+                                            <input type="text" class="form-control" name="salary_currency" 
+                                                   value="{{ job.salary_currency }}">
+                                        </div>
+                                        <!-- Nouveau champ pour l'expérience requise -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Expérience requise</label>
+                                            <input type="text" class="form-control" name="experience_required" 
+                                                   value="{{ job.experience_required }}">
+                                        </div>
+                                        <!-- Nouveau champ pour l'éducation requise -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Éducation requise</label>
+                                            <input type="text" class="form-control" name="education_required" 
+                                                   value="{{ job.education_required }}">
+                                        </div>
+                                        <!-- Nouveau champ pour les compétences requises -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Compétences requises</label>
+                                            <input type="text" class="form-control" name="skills_required" 
+                                                value="{{ ', '.join(job.skills_required if job.skills_required else []) }}">
+
+                                        </div>
+                                        <!-- Nouveau champ pour les avantages -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Avantages</label>
+                                            <input type="text" class="form-control" name="benefits" 
+                                                   value="{{ job.benefits }}">
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="button" class="btn btn-secondary btn-sm cancel-edit-btn">
+                                                Annuler
+                                            </button>
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                Enregistrer
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Vous n'avez pas encore publié d'offres d'emploi.
+                    <a href="{{ url_for('recruiter.new_job') }}">Créer votre première offre</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
