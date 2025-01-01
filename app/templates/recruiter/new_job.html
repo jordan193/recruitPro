@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Nouvelle offre d'emploi{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Créer une nouvelle offre d'emploi</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Titre du poste</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description du poste</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="requirements" class="form-label">Prérequis</label>
+                            <textarea class="form-control" id="requirements" name="requirements" rows="4" required></textarea>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="experience_required" class="form-label">Expérience requise</label>
+                            <input type="text" class="form-control" id="experience_required" name="experience_required" placeholder="Ex. : 2-3 ans">
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="education_required" class="form-label">Niveau d'éducation requis</label>
+                            
+                            <select class="form-select" id="education_required" name="education_required" >
+                                <option value="" disabled selected>Choisissez votre niveau</option>
+                                <option value="CEP" >CEP</option>
+                                <option value="BEPC">BEPC</option>
+                                <option value="Probatoire">Probatoire</option>
+                                <option value="Bac">Bac</option>
+                                <option value="Bac+1">Bac+1</option>
+                                <option value="Bac+2">Bac+2</option>
+                                <option value="Bac+3">Bac+3</option>
+                                <option value="Bac+4">Bac+4</option>
+                                <option value="Bac+5 et plus">Bac+5 et plus</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="responsibilities" class="form-label">Responsabilités</label>
+                            <textarea class="form-control" id="responsibilities" name="responsibilities" rows="4" placeholder="Détaillez les responsabilités principales du poste"></textarea>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="skills_required" class="form-label">Compétences requises (séparées par des virgules)</label>
+                            <textarea class="form-control" id="skills_required" name="skills_required" rows="3"></textarea>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="location" class="form-label">Localisation</label>
+                                <input type="text" class="form-control" id="location" name="location">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="location_type" class="form-label">Type de localisation</label>
+                                <select class="form-select" id="location_type" name="location_type" required>
+                                    <option value="on-site">Sur site</option>
+                                    <option value="remote">Télétravail</option>
+                                    <option value="hybrid">Hybride</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="salary_min" class="form-label">Salaire minimum</label>
+                                <input type="number" class="form-control" id="salary_min" name="salary_min">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="salary_max" class="form-label">Salaire maximum</label>
+                                <input type="number" class="form-control" id="salary_max" name="salary_max">
+                            </div>
+                            <div class="mb-3">
+                                <label for="contract_type" class="form-label">Type de contrat</label>
+                                <select class="form-select" id="contract_type" name="contract_type" required>
+                                    <option value="" disabled selected>Choisissez un type de contrat</option>
+                                    <option value="CDI">CDI</option>
+                                    <option value="CDD">CDD</option>
+                                    <option value="Freelance">Freelance</option>
+                                    <option value="Stage">Stage</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="benefits" class="form-label">Avantages offerts</label>
+                            <textarea class="form-control" id="benefits" name="benefits" rows="3"></textarea>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="expires_at" class="form-label">Date d'expiration</label>
+                            <input type="date" class="form-control" id="expires_at" name="expires_at">
+                        </div>
+                    
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('recruiter.dashboard') }}" class="btn btn-outline-secondary me-md-2">Annuler</a>
+                            <button type="submit" class="btn btn-primary">Publier l'offre</button>
+                        </div>
+                    </form>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

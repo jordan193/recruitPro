@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Profil du Recruteur</h1>
+    <div class="profile-card card shadow-lg p-4 mb-4 rounded">
+        <div class="row">
+            <!-- Détails du recruteur -->
+            <div class="col-md-12">
+                <h2 class="text-primary mb-3">{{ recruiter.company_name }}</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Nom de l'entreprise :</strong> {{ recruiter.company_name }}</p>
+                        <p><strong>Description de l'entreprise :</strong> {{ recruiter.company_description or 'Non renseignée' }}</p>
+                        <p><strong>Industrie :</strong> {{ recruiter.industry or 'Non renseignée' }}</p>
+                        <p><strong>Taille de l'entreprise :</strong> {{ recruiter.company_size or 'Non renseignée' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Site web :</strong> <a href="{{ recruiter.website }}" target="_blank" class="text-decoration-none">{{ recruiter.website or 'Non renseigné' }}</a></p>
+                        <p><strong>Emplacement :</strong> {{ recruiter.location or 'Non renseigné' }}</p>
+                        <p><strong>Créé le :</strong> {{ recruiter.created_at.strftime('%d %B %Y') }}</p>
+                        <p><strong>Mis à jour le :</strong> {{ recruiter.updated_at.strftime('%d %B %Y') }}</p>
+                    </div>
+                </div>
+
+                <!-- Affichage du logo -->
+                <div class="text-center my-4">
+                    <strong>Logo de l'entreprise :</strong><br>
+                    {% if recruiter.logo_path %}
+                        <img src="{{ url_for('static', filename='uploads/logos/' + recruiter.logo_path) }}" alt="Logo" class="img-fluid rounded-circle border" width="150">
+                    {% else %}
+                        <p>Aucun logo téléchargé.</p>
+                    {% endif %}
+                </div>
+
+                <div class="text-center">
+                    <a href="{{ url_for('recruiter.edit_recruiter_profile') }}" class="btn btn-primary btn-lg">Modifier le profil</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

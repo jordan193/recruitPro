@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Modifier Mon Profil</h1>
+    <div class="profile-card p-4 shadow-lg rounded">
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label for="profile_picture">Photo de profil (si vous souhaitez en télécharger une)</label>
+                <input type="file" id="profile_picture" name="profile_picture" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="first_name">Prénom</label>
+                <input type="text" id="first_name" name="first_name" class="form-control" value="{{ candidate.first_name }}">
+            </div>
+            <div class="form-group">
+                <label for="last_name">Nom</label>
+                <input type="text" id="last_name" name="last_name" class="form-control" value="{{ candidate.last_name }}">
+            </div>
+            <div class="form-group">
+                <label for="phone">Numéro de téléphone</label>
+                <input type="text" id="phone" name="phone" class="form-control" value="{{ candidate.phone }}">
+            </div>
+            <div class="form-group">
+                <label for="linkedin_url">LinkedIn</label>
+                <input type="text" id="linkedin_url" name="linkedin_url" class="form-control" value="{{ candidate.linkedin_url }}">
+            </div>
+            <div class="form-group">
+                <label for="github_url">GitHub</label>
+                <input type="text" id="github_url" name="github_url" class="form-control" value="{{ candidate.github_url }}">
+            </div>
+            <div class="form-group">
+                <label for="portfolio_url">Portfolio</label>
+                <input type="text" id="portfolio_url" name="portfolio_url" class="form-control" value="{{ candidate.portfolio_url }}">
+            </div>
+            <div class="form-group">
+                <label for="experience_years">Années d'expérience</label>
+                <input type="number" id="experience_years" name="experience_years" class="form-control" value="{{ candidate.experience_years }}">
+            </div>
+            <div class="form-group">
+                <label for="education_level">Niveau d'éducation</label>
+                <select id="education_level" name="education_level" class="form-control">
+                    <option value="" disabled selected>Choisissez votre niveau</option>
+                    <option value="CEP" {% if candidate.education_level == "CEP" %}selected{% endif %}>CEP</option>
+                    <option value="BEPC" {% if candidate.education_level == "BEPC" %}selected{% endif %}>BEPC</option>
+                    <option value="Probatoire" {% if candidate.education_level == "Probatoire" %}selected{% endif %}>Probatoire</option>
+                    <option value="Bac" {% if candidate.education_level == "Bac" %}selected{% endif %}>Bac</option>
+                    <option value="Bac+1" {% if candidate.education_level == "Bac+1" %}selected{% endif %}>Bac+1</option>
+                    <option value="Bac+2" {% if candidate.education_level == "Bac+2" %}selected{% endif %}>Bac+2</option>
+                    <option value="Bac+3" {% if candidate.education_level == "Bac+3" %}selected{% endif %}>Bac+3</option>
+                    <option value="Bac+4" {% if candidate.education_level == "Bac+4" %}selected{% endif %}>Bac+4</option>
+                    <option value="Bac+5 et plus" {% if candidate.education_level == "Bac+5 et plus" %}selected{% endif %}>Bac+5 et plus</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="desired_position">Position souhaitée</label>
+                <input type="text" id="desired_position" name="desired_position" class="form-control" value="{{ candidate.desired_position }}">
+            </div>
+            <div class="form-group">
+                <label for="desired_salary">Salaire souhaité</label>
+                <input type="text" id="desired_salary" name="desired_salary" class="form-control" value="{{ candidate.desired_salary }}">
+            </div>
+            <div class="form-group">
+                <label for="skills">Compétences (séparées par une virgule)</label>
+                <textarea id="skills" name="skills" class="form-control" rows="4" placeholder="Exemple : Python, Java, JavaScript">
+                    {{ ', '.join(candidate.skills) if candidate.skills else '' }}
+                </textarea>
+                
+                
+                
+            </div>
+
+            <div class="form-group">
+                <label for="resume">CV (si vous souhaitez en télécharger un nouveau)</label>
+                <input type="file" id="resume" name="resume" class="form-control">
+                {% if candidate.resume_path %}
+                    <p>CV actuel : <a href="{{ url_for('static', filename='uploads/resumes/' + candidate.resume_path) }}" target="_blank">Télécharger le CV actuel</a></p>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-success mt-3">Enregistrer les modifications</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

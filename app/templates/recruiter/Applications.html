@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Candidatures - {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url_for('recruiter.dashboard') }}">Tableau de bord</a>
+                    </li>
+                    <li class="breadcrumb-item active">Candidatures pour {{ job.title }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ job.title }}</h2>
+            <p class="mb-0 text-muted">
+                <i class="fas fa-map-marker-alt"></i> {{ job.location }} |
+                <i class="fas fa-file-contract"></i> {{ job.contract_type }}
+            </p>
+        </div>
+        <div class="card-body">
+            {% if applications %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Candidat</th>
+                                <th>Date</th>
+                                <th>CV</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in applications %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('candidate.profile', candidate_id=application.candidate.id) }}">
+                                        Profile du Candidat
+                                    </a>
+                                </td>
+                                <td>{{ application.applied_at.strftime('%d/%m/%Y') }}</td>
+                                <td>
+                                    <a href="{{ url_for('static', filename='uploads/resumes/' + application.resume_version) }}" 
+                                       target="_blank" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-file-pdf"></i> CV
+                                    </a>
+                                </td>
+                                <td>
+                                    <form method="POST" 
+                                          action="{{ url_for('recruiter.update_application_status', 
+                                                  application_id=application.id) }}"
+                                          class="d-inline">
+                                          <select name="status" class="form-select form-select-sm">
+                                            {% for status in ['pending', 'reviewing', 'interview', 'accepted', 'rejected'] %}
+                                                <option value="{{ status }}" {% if application.status == status %} selected {% endif %}>
+                                                    {{ status|title }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#coverLetter{{ application.id }}">
+                                        Lettre de motivation
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Modal pour la lettre de motivation -->
+                            <div class="modal fade" id="coverLetter{{ application.id }}" 
+                                 tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Lettre de motivation</h5>
+                                            <button type="button" class="btn-close" 
+                                                    data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{ application.cover_letter|nl2br }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center">Aucune candidature reçue pour le moment.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Ajouter une Photo de Profil</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="profile_picture">Sélectionner une photo :</label>
+            <input type="file" id="profile_picture" name="profile_picture" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </form>
+</div>
+{% endblock %}

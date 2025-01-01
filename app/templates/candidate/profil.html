@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Mon Profil</h1>
+    <div class="profile-card p-4 shadow-lg rounded">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                {% if candidate.profile_picture %}
+                    <img src="{{ url_for('static', filename='uploads/profiles/' + candidate.profile_picture) }}" 
+                         alt="Photo de profil" class="img-fluid rounded-circle border" width="150" style="object-fit: cover;">
+                {% else %}
+                    <p>Pas de photo de profil</p>
+                    <a href="{{ url_for('candidate.add_profile_picture') }}" class="btn btn-primary">Ajouter une photo de profil</a>
+                {% endif %}
+            </div>
+            <!-- Détails du candidat -->
+            <div class="col-md-12">
+                <div class="text-center mb-4">
+                    <h2 class="display-4 text-primary">{{ candidate.first_name }} {{ candidate.last_name }}</h2>
+                </div>
+                <div class="list-group">
+                    <p class="list-group-item list-group-item-light">
+                        <strong>Numéro de téléphone :</strong> 
+                        {{ candidate.phone or 'Non renseigné' }}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>LinkedIn :</strong> 
+                        {% if candidate.linkedin_url != 'None'%}
+                            <a href="{{ candidate.linkedin_url }}" target="_blank">{{ candidate.linkedin_url }}</a>
+                        {% else %}
+                            <span>Aucun lien</span>
+                        {% endif %}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>GitHub :</strong> 
+                        {% if candidate.github_url != 'None'%}
+                            <a href="{{ candidate.github_url }}" target="_blank">{{ candidate.github_url }} </a>
+                        {% else %}
+                            <span>Aucun lien</span>
+                        {% endif %}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>Portfolio :</strong> 
+                        {% if candidate.portfolio_url != 'None'%}
+                            <a href="{{ candidate.portfolio_url }}" target="_blank">{{ candidate.portfolio_url }}</a>
+                        {% else %}
+                            <span>Aucun lien</span>
+                        {% endif %}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>Années d'expérience :</strong> 
+                        {{ candidate.experience_years or 'Non renseigné' }}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>Niveau d'éducation :</strong> 
+                        {{ candidate.education_level or 'Non renseigné' }}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>Position souhaitée :</strong> 
+                        {{ candidate.desired_position or 'Non renseigné' }}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>Salaire souhaité :</strong> 
+                        {{ candidate.desired_salary or 'Non renseigné' }}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>Compétences :</strong>
+                        {% if candidate.skills %}
+                            <ul>
+                                {% for skill in candidate.skills %}
+                                    <li>{{ skill }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            Aucune compétence renseignée.
+                        {% endif %}
+                    </p>
+                    <p class="list-group-item list-group-item-light">
+                        <strong>Résumé :</strong> 
+                        {% if candidate.resume_path %}
+                            <a href="{{ url_for('static', filename='uploads/resumes/' + candidate.resume_path) }}" target="_blank" class="btn btn-primary">
+                                Télécharger le CV
+                            </a>
+                        {% else %}
+                            Pas de CV téléchargé.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            {% if current_user.is_candidate and candidate.user_id == current_user.id %}
+            <div class="text-center mt-4">
+                <a href="{{ url_for('candidate.edit_profile') }}" class="btn btn-warning">Modifier le Profil</a>
+            </div>
+        {% endif %}
+        
+        </div>
+    </div>
+</div>
+{% endblock %}
