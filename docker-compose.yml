@@ -4,7 +4,7 @@ services:
   recrutement_app:
     build: .
     ports:
-      - "5000:5000"  # Map container port 5000 to host port 5000
+      - "4008:4008"  # Map container port 5000 to host port 5000
     environment:
       - DATABASE_URL=postgresql://jordan:Damas237@recrutement_postgres:5432/Base_donnee
     depends_on:
@@ -22,7 +22,7 @@ services:
       - POSTGRES_USER=jordan
       - POSTGRES_PASSWORD=Damas237
     ports:
-      - "5433:5432"  # Map container port 5432 to host port 5433 to avoid conflicts
+      - "4007:4006"  # Map container port 5432 to host port 5433 to avoid conflicts
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
